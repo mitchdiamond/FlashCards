@@ -5,10 +5,16 @@ using TMPro;
 
 public class CardUpdater : MonoBehaviour
 {
-    public TextMeshPro mText;
+    public delegate void CheckEnglishAnswer(string s);
+    public static event CheckEnglishAnswer OnEnglishCheck;
+
+
+    public TextMeshPro  mText;
 
     [SerializeField]
     string EnglishTranslation;
+    [SerializeField]
+    string JapaneseTranslation;
 
     public Vector3 startPos;
     public Vector3 zoomPos;
@@ -33,34 +39,30 @@ public class CardUpdater : MonoBehaviour
 
     }
 
-
+    public void UpdateText(string e)
+    {
+        if(mText!= null)
+        {
+            EnglishTranslation = e;
+            mText.text = e;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
-            mText.text = EnglishTranslation;
-            startPos = this.transform.position;
+        mText = GetComponentInChildren(typeof(TextMeshPro)) as TextMeshPro;
+        // if()
+        mText.text = EnglishTranslation;
+        startPos = this.transform.position;
     }
 
-    private void OnMouseOver() 
-    {
-        if(canMoveCard)
+    private void OnMouseOver() {
+        if(Input.GetMouseButtonDown(0))
         {
-            this.transform.position = zoomPos;
-            StartCoroutine(Timer());
-        }
-
+            if(OnEnglishCheck != null)
+                OnEnglishCheck(EnglishTranslation);
+        }    
     }
-
-    private void OnMouseExit() {
-        if(canMoveCard)
-        {
-            this.transform.position = startPos;
-            StartCoroutine(Timer());
-        }
-
-    }
-
-
 
 }
