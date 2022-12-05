@@ -4,8 +4,14 @@ using UnityEngine;
 
 public class CardManager : MonoBehaviour
 {
+    public delegate void AdvanceCardIndex(int posIndex, int wordIndex);
+    public static event AdvanceCardIndex OnAdvanceIndex;
+
     [SerializeField]
-    private List<int> _order;
+    private string []cardObjects;
+
+    [SerializeField]
+    private CardUpdater []cards;
 
     [SerializeField]
     private GameObject []locations;
@@ -17,38 +23,34 @@ public class CardManager : MonoBehaviour
 
 
     private GameObject tempCardPrefab;
-    private CardUpdater tempCard;
+    public GameObject tempObject;
+    public CardUpdater tempCard;
 
 
 
     // Start is called before the first frame update
     void Start()
     {
-        for(int i=0; i<locations.Length; i++)
-        {
-            _order.Add(i);
-        }
+        WordManager.OnAdvanceIndex += AdvanceIndex;
 
         for(int i=0; i<locations.Length; i++)
         {
-            
-            tempCardPrefab = Instantiate(cardPrefab, locations[RandomOrder()].transform);
+            Debug.Log(i);
+            tempCardPrefab = Instantiate(cardPrefab, locations[i].transform);
             tempCard = (CardUpdater)tempCardPrefab.GetComponent(typeof(CardUpdater));
-            tempCard.UpdateText(wm.getEnglishWord(i));
+            tempCard.UpdateCardInfo(wm.getEnglishWord(i), i);
+            cards[i] = tempCard;
         }
-
-
-
     }
 
-    int RandomOrder()
+    
+    void AdvanceIndex(int posIndex, int wordIndex)
     {
-        int i = Random.Range(0, _order.Count);
-        int n = _order[i];
+        Debug.Log("Position index is "+ posIndex + " word index is " + wordIndex);
+        tempCard = cards[posIndex];
 
-        _order.RemoveAt(i);
-
-        return n;
+        tempCard.UpdateCardInfo(wm.getEnglishWord(wordIndex), posIndex);
+        // tempCard.PrintWord();
     }
 
 }
