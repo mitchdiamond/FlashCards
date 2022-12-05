@@ -5,13 +5,9 @@ using TMPro;
 
 public class CardUpdater : MonoBehaviour
 {
-    public delegate void CheckEnglishAnswer(string s, int i);
+    public delegate void CheckEnglishAnswer(string s);
     public static event CheckEnglishAnswer OnEnglishCheck;
 
-
-
-
-    public int cardIndex = 0;
 
     public TextMeshPro  mText;
 
@@ -23,40 +19,33 @@ public class CardUpdater : MonoBehaviour
     public Vector3 startPos;
     public Vector3 zoomPos;
 
-    // [SerializeField]
-    // private float delay = 2.0f;
-    // [SerializeField]
-    // private float elapsedTime = 0.0f;
-    // [SerializeField]
-    // bool canMoveCard = true;
+    [SerializeField]
+    private float delay = 2.0f;
+    [SerializeField]
+    private float elapsedTime = 0.0f;
+    [SerializeField]
+    bool canMoveCard = true;
 
-    // private IEnumerator Timer()
-    // {
-    //     canMoveCard = false;
-    //     while(elapsedTime<=delay)
-    //     {
-    //         elapsedTime+= Time.deltaTime;
-    //         yield return null;
-    //     }
-    //     canMoveCard = true;
-    //     elapsedTime = 0.0f;
+    private IEnumerator Timer()
+    {
+        canMoveCard = false;
+        while(elapsedTime<=delay)
+        {
+            elapsedTime+= Time.deltaTime;
+            yield return null;
+        }
+        canMoveCard = true;
+        elapsedTime = 0.0f;
 
-    // }
+    }
 
-    public void UpdateCardInfo(string e, int i)
+    public void UpdateText(string e)
     {
         if(mText!= null)
         {
             EnglishTranslation = e;
             mText.text = e;
         }
-
-        cardIndex = i;
-    }
-
-    public void PrintWord()
-    {
-        Debug.Log(EnglishTranslation);
     }
 
     // Start is called before the first frame update
@@ -68,16 +57,12 @@ public class CardUpdater : MonoBehaviour
         startPos = this.transform.position;
     }
 
-    private void OnMouseOver() 
-    {
+    private void OnMouseOver() {
         if(Input.GetMouseButtonDown(0))
         {
             if(OnEnglishCheck != null)
-                OnEnglishCheck(EnglishTranslation, cardIndex);
-
-            
+                OnEnglishCheck(EnglishTranslation);
         }    
     }
-
 
 }
