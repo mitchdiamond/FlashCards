@@ -11,13 +11,24 @@ public class WordManager : MonoBehaviour
     public delegate void AdvanceCardIndex(int posIndex, int wordIndex);
     public static event AdvanceCardIndex OnAdvanceIndex;
 
-    public TextMeshProUGUI  engText;
-    public TextMeshProUGUI  kanaText;
-    public TextMeshProUGUI  kanjiText;
+    public TextMeshProUGUI  engText3;
+    public TextMeshProUGUI  kanaText3;
+    public TextMeshProUGUI  kanjiText3;
+
+    public TextMeshProUGUI kanaText2;
+    public TextMeshProUGUI kanjiText2;
+
+    public TextMeshProUGUI kanjiText1;
 
     public List<VocabCard> activeWords = new List<VocabCard>();
 
     public int index = 0;
+
+    public int attemptNumber = 1;
+
+    public GameObject Attempt1;
+    public GameObject Attempt2;
+    public GameObject Attempt3;
 
     // Start is called before the first frame update
     void Awake()
@@ -40,9 +51,16 @@ public class WordManager : MonoBehaviour
             activeWords.Add(v);
         }
 
-        engText.text = activeWords[index].e_word;
-        kanaText.text = activeWords[index].h_word;
-        kanjiText.text = activeWords[index].k_word;
+        engText3.text = activeWords[index].e_word;
+        kanaText3.text = activeWords[index].h_word;
+        kanjiText3.text = activeWords[index].k_word;
+
+        kanaText2.text = activeWords[index].h_word;
+        kanjiText2.text = activeWords[index].k_word;
+
+        kanjiText1.text = activeWords[index].k_word;
+
+        SetAttemptPrompt();
         
         // foreach(VocabCard v in activeWords)
         // {   
@@ -69,9 +87,17 @@ public class WordManager : MonoBehaviour
             } 
             else
                 index = 0;
-            engText.text = activeWords[index].e_word;
-            kanaText.text = activeWords[index].h_word;
-            kanjiText.text = activeWords[index].k_word;
+            engText3.text = activeWords[index].e_word;
+            kanaText3.text = activeWords[index].h_word;
+            kanjiText3.text = activeWords[index].k_word;
+
+            kanaText2.text = activeWords[index].h_word;
+            kanjiText2.text = activeWords[index].k_word;
+
+            kanjiText1.text = activeWords[index].k_word;
+
+            attemptNumber = 1;
+            SetAttemptPrompt();
 
             if(OnAdvanceIndex != null)
                 OnAdvanceIndex(i, index+9);
@@ -80,10 +106,37 @@ public class WordManager : MonoBehaviour
         }
         else
         {
+            if(attemptNumber != 3)
+            {
+                attemptNumber ++;
+                SetAttemptPrompt();
+            }
             Debug.Log("Match not found.");
             return;
         }
     }
 
+    public void SetAttemptPrompt()
+    {
+        switch(attemptNumber)
+        {
+            case 1:
+                Attempt1.gameObject.SetActive(true);
+                Attempt2.gameObject.SetActive(false);
+                Attempt3.gameObject.SetActive(false);
+                break;
+            case 2:
+                Attempt1.gameObject.SetActive(false);
+                Attempt2.gameObject.SetActive(true);
+                Attempt3.gameObject.SetActive(false);
+                break;
+            default:
+                Attempt1.gameObject.SetActive(false);
+                Attempt2.gameObject.SetActive(false);
+                Attempt3.gameObject.SetActive(true);
+                break;
+
+        }
+    }
 
 }
